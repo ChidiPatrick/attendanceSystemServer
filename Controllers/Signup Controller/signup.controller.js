@@ -11,14 +11,6 @@ const addNewUser = (req, res) => {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       password: req.body.password,
-
-      // firstName: "Patrick",
-      // lastName: "Chido",
-      // password: "304q03",
-      // tel: 233449483,
-      // username: "okaforpatrick302@gmail.com",
-      // email: "okaforpatrick302@gmail.com",
-      // address: "Okwuego",
     }),
 
     req.body.password,
