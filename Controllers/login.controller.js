@@ -5,7 +5,7 @@ const verifyFunction = async (username, password, done) => {
     .then((user) => {
       if (!user) {
         console.log("User not found!!!");
-        return done(null, false, { message: "User does not exis" });
+        return done(null, false, { message: "User does not exist" });
       }
 
       if (!user.verifyPassword(password)) {
@@ -28,7 +28,7 @@ const verifyFunction = async (username, password, done) => {
 
 // login user
 const loginUser = (req, res) => {
-  console.log("loginUser called!!");
+  res.send("Welcome aboard mate").statusCode(200).json(res.body);
 };
 
 module.exports = { verifyFunction, loginUser };

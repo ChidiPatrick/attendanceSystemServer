@@ -5,21 +5,20 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
 const userModel = require("./Models/Signup/signup.model");
+const { signupRoute } = require("./Routes/signup.route");
+const signInRoute = require("./Routes/signin.user.route");
 
 const app = express();
 
-passport.use(userModel.createStrategy());
+// passport.use(userModel.createStrategy());
 
-app.set("env", "development");
-const secret = crypto.randomBytes(32);
+// app.set("env", "development");
+// const secret = crypto.randomBytes(32);
 
-console.log(secret.toString("hex"));
+// console.log(secret.toString("hex"));
 
-passport.serializeUser(userModel.serializeUser());
-passport.deserializeUser(userModel.deserializeUser());
-
-const { signupRoute } = require("./Routes/signup.route");
-const signInRoute = require("./Routes/signin.user.route");
+// passport.serializeUser(userModel.serializeUser());
+// passport.deserializeUser(userModel.deserializeUser());
 
 app.use("/signupUser", signupRoute);
 app.use("/signinUser", signInRoute);

@@ -25,7 +25,35 @@ signInRoute.use(
   })
 );
 
-passport.use(new LocalStrategy(verifyFunction));
+// passport.use(
+//   new LocalStrategy(function (username, password, done) {
+//     console.log("Verify function called!!");
+//     // look for the user data
+//     userModel.findOne({ username: username }, function (err, user) {
+//       // if there is an error
+//       if (err) {
+//         console.log(err);
+//         return done(err);
+//       }
+//       // if user doesn't exist
+//       if (!user) {
+//         console.log("User not found.");
+//         return done(null, false, { message: "User not found." });
+//       }
+//       // if the password isn't correct
+//       if (!user.verifyPassword(password)) {
+//         console.log("Invalid password");
+//         return done(null, false, {
+//           message: "Invalid password.",
+//         });
+//       }
+//       // if the user is properly authenticated
+//       console.log("valid user");
+
+//       return done(null, user);
+//     });
+//   })
+// );
 
 // Passport configuration
 signInRoute.use(passport.initialize());
