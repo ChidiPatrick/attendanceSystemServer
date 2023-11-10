@@ -2,4 +2,8 @@ const express = require("express");
 
 const homePageRoute = express.Router();
 
-module.exports = homePageRoute;
+homePageRoute.post("/", (req, res) => {
+  res.send("Home page");
+});
+
+module.exports = { homePageRoute };

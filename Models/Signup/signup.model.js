@@ -18,18 +18,18 @@ const userBioSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  username: {
+  email: {
     type: String,
     required: true,
   },
-  email: {
+  username: {
     type: String,
     required: true,
   },
 });
 
 ////////// Extend userBioSchema //////////
-userBioSchema.plugin(passportLocalMongoose);
+// userBioSchema.plugin(passportLocalMongoose);
 
 const userModel = mongoose.model("users", userBioSchema);
 

@@ -7,6 +7,8 @@ const LocalStrategy = require("passport-local").Strategy;
 const userModel = require("./Models/Signup/signup.model");
 const { signupRoute } = require("./Routes/signup.route");
 const signInRoute = require("./Routes/signin.user.route");
+const { failurePage } = require("./Routes/failure.page");
+const { homePageRoute } = require("./Routes/home.page");
 
 const app = express();
 
@@ -22,5 +24,7 @@ const app = express();
 
 app.use("/signupUser", signupRoute);
 app.use("/signinUser", signInRoute);
+app.use("/success", homePageRoute);
+app.use("/failure", failurePage);
 
 module.exports = { app };

@@ -7,6 +7,7 @@ require("dotenv").config();
 
 // Local directory imports
 const { app } = require("./app");
+app.use(express.json());
 
 mongoose.connect(process.env.MONGOOSE_URI);
 

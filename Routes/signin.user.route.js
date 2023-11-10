@@ -7,63 +7,69 @@ const crypto = require("crypto");
 const LocalStrategy = require("passport-local").Strategy;
 const userModel = require("../Models/Signup/signup.model");
 
-const {
-  verifyFunction,
-  loginUser,
-} = require("../Controllers/login.controller");
+const { loginUser } = require("../Controllers/login.controller");
 
 const signInRoute = express.Router();
 
 const secretKey = crypto.randomBytes(32);
 
+// signInRoute.use(bodyParser.urlencoded({ extended: true }));
+
 signInRoute.use(
   session({
-    secret: secretKey,
+    secret: `${secretKey}`,
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 60 * 60 * 1000 },
   })
 );
 
-// passport.use(
-//   new LocalStrategy(function (username, password, done) {
-//     console.log("Verify function called!!");
-//     // look for the user data
-//     userModel.findOne({ username: username }, function (err, user) {
-//       // if there is an error
-//       if (err) {
-//         console.log(err);
-//         return done(err);
-//       }
-//       // if user doesn't exist
-//       if (!user) {
-//         console.log("User not found.");
-//         return done(null, false, { message: "User not found." });
-//       }
-//       // if the password isn't correct
-//       if (!user.verifyPassword(password)) {
-//         console.log("Invalid password");
-//         return done(null, false, {
-//           message: "Invalid password.",
-//         });
-//       }
-//       // if the user is properly authenticated
-//       console.log("valid user");
-
-//       return done(null, user);
-//     });
-//   })
-// );
-
 // Passport configuration
 signInRoute.use(passport.initialize());
 signInRoute.use(passport.session());
 
-passport.use(userModel.createStrategy());
+// passport.use(userModel.createStrategy());
+passport.use(
+  new LocalStrategy(function (username, password, done) {
+    userModel
+      .findOne({ username, password })
+      .then((user) => {
+        if (!user) {
+          return done(null, false, { message: "User does not exist" });
+        }
 
-passport.serializeUser(userModel.serializeUser());
-passport.deserializeUser(userModel.deserializeUser());
+        if (user.password !== password) {
+          return done(null, false, { message: "Incorrect password" });
+        }
+        console.log(user);
 
-signInRoute.post("/", express.json(), loginUser);
+        return done(null, true);
+      })
+      .catch((err) => done(err, false));
+  })
+);
+
+passport.serializeUser((user, done) => {
+  done(null, { firstName: user.firstName, tel: user.tel, id: user.id });
+});
+passport.deserializeUser((user, done) => {
+  user
+    .findById(id)
+    .then((user) => {
+      done(null, user);
+    })
+    .catch((err) => console.log(err));
+});
+
+signInRoute.post(
+  "/",
+  express.json(),
+  passport.authenticate("local", {
+    successRedirect: "/success",
+    failureRedirect: "/failure",
+    // failureFlash: true,
+  }),
+  loginUser
+);
 
 module.exports = signInRoute;
