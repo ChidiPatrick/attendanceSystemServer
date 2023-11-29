@@ -1,7 +1,8 @@
 const express = require("express");
 
 const bodyParser = require("body-parser");
-const session = require("express-session");
+// const session = require("express-session");
+const session = require("cookie-session");
 const passport = require("passport");
 const crypto = require("crypto");
 const LocalStrategy = require("passport-local").Strategy;
@@ -12,18 +13,16 @@ const { loginUser } = require("../Controllers/login.controller");
 
 const signInRoute = express.Router();
 
-const secretKey = crypto.randomBytes(32);
-
 // signInRoute.use(bodyParser.urlencoded({ extended: true }));
 
-signInRoute.use(
-  session({
-    secret: `${secretKey}`,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60 * 60 * 1000 },
-  })
-);
+// signInRoute.use(
+//   session({
+//     secret: `${secretKey}`,
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: { maxAge: 60 * 60 * 1000 },
+//   })
+// );
 
 // Passport configuration
 signInRoute.use(passport.initialize());
@@ -34,8 +33,6 @@ passport.use(
   new LocalStrategy(
     { usernameField: "email", passwordField: "password" },
     async function (email, password, done) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-
       userModel
         .findOne({ email })
 
@@ -54,26 +51,22 @@ passport.use(
             return done(null, false, { message: "Incorrect password" });
           }
 
-          // if (user.password !== password) {
-          //   return done(null, false, { message: "Incorrect password" });
-          // }
-          console.log(isCorrectPassword);
-
-          return done(null, true);
+          return done(null, user);
         })
         .catch((err) => done(err, false));
     }
   )
 );
 
-passport.serializeUser((user, done) => {
-  done(null, { firstName: user.firstName, tel: user.tel, id: user.id });
+passport.serializeUser(function (user, done) {
+  console.log("User serialized");
+  done(null, user.id);
 });
-passport.deserializeUser((user, done) => {
+passport.deserializeUser((id, done) => {
   user
     .findById(id)
     .then((user) => {
-      done(null, user);
+      done(err, user);
     })
     .catch((err) => console.log(err));
 });
@@ -84,7 +77,6 @@ signInRoute.post(
   passport.authenticate("local", {
     successRedirect: "/success",
     failureRedirect: "/failure",
-    // failureFlash: true,
   }),
   loginUser
 );

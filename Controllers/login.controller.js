@@ -2,7 +2,8 @@
 
 // login user
 const loginUser = (req, res) => {
-  console.log(req.user);
+  // req.cookie.user =;
+  console.log(req.session);
 };
 
 module.exports = { loginUser };

@@ -1,8 +1,10 @@
 const express = require("express");
+const passport = require("passport");
 
 const homePageRoute = express.Router();
 
-homePageRoute.post("/", (req, res) => {
+homePageRoute.get("/", (req, res) => {
+  console.log(req.session);
   res.send("Home page");
 });
 
